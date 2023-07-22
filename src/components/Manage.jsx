@@ -9,26 +9,35 @@ function Manage(props) {
   const pageOffset = 0;
   const [userList, setUserList] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
-  const [UserModalIsShow, handleUserModalShow] = useState({
+  const [UserModalInfo, handleUserModalShow] = useState({
     isAdd: true,
     isShow: false,
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
   useEffect(() => {
     getUser(1);
   }, []);
   const getUser = async (page) => {
     let res = await fetchAllUsers(page);
+    // console.log(res);
     if (res && res.data) {
       setUserList(res.data);
       setTotalPage(res.total_pages);
-      // console.log(r);
+    } else {
+      setIsError(true);
     }
+
+    setIsLoading(false);
   };
   const handlePageChange = (props) => {
     getUser(+props.selected + 1);
   };
-  const handleAddNewUser = () => {
+  const handleShowAddNewUserModal = () => {
     handleUserModalShow({ isAdd: true, isShow: true });
+  };
+  const handleAddNewUser = (user) => {
+    setUserList([user, ...userList]);
   };
   const handleEditUser = () => {
     handleUserModalShow({ isAdd: false, isShow: true });
@@ -38,12 +47,20 @@ function Manage(props) {
     <Container className="mt-2">
       <div className="d-flex justify-content-between mb-2">
         <span className="my-auto">List Users: </span>
-        <Button variant="success" className="" onClick={handleAddNewUser}>
+        <Button
+          variant="success"
+          className=""
+          onClick={handleShowAddNewUserModal}
+        >
           Add new User
         </Button>
       </div>
       <Modal_EditLoginUser
-        modalInfo={{ UserModalIsShow, handleUserModalShow }}
+        modalInfo={{
+          UserModalInfo,
+          handleUserModalShow,
+        }}
+        handleAddNewUser={handleAddNewUser}
       />
       <Table striped bordered hover>
         <thead>
@@ -57,7 +74,7 @@ function Manage(props) {
         </thead>
         <tbody>
           {userList &&
-            userList.length != 0 &&
+            userList.length > 0 &&
             userList.map((user, index) => {
               return (
                 <tr key={`user+${index}`}>
@@ -76,7 +93,7 @@ function Manage(props) {
                       </Button>
                       <Button
                         variant="danger"
-                        className=""
+                        className="mb-1"
                         onClick={handleDeleteUser}
                       >
                         Delete
@@ -88,6 +105,15 @@ function Manage(props) {
             })}
         </tbody>
       </Table>
+      {isLoading && (
+        <span className="d-block text-center">
+          {" "}
+          Loading <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+        </span>
+      )}
+      {isError && (
+        <span className="d-block text-center"> Something wrong ....</span>
+      )}
       <ReactPaginate
         previousLabel="Previous"
         nextLabel="Next"

@@ -3,83 +3,116 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { Form } from "react-bootstrap";
 import { creatUser } from "../services/UserServices";
+
+import { ToastContainer, toast } from "react-toastify";
 const Modal_EditLoginUser = (props) => {
-  const isAdd = props.modalInfo.UserModalIsShow.isAdd;
-  const isShow = props.modalInfo.UserModalIsShow.isShow;
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [name, setName] = useState({ frstName: "", lstName: "" });
+  const isAdd = props.modalInfo.UserModalInfo.isAdd;
+  const isShow = props.modalInfo.UserModalInfo.isShow;
+  const handleAddNewUser = props.handleAddNewUser;
+  const [name, setName] = useState({ firstName: "", lastName: "" });
   const [email, setEmail] = useState("");
   const [validation, setValidate] = useState({
     email: undefined,
-    frstN: undefined,
-    lstN: undefined,
+    firstName: undefined,
+    lastName: undefined,
   });
   const [isWaiting, setIsWaiting] = useState(false);
+
+  const [isCheck, setIsCheck] = useState(false);
   const handleClose = () => {
-    props.modalInfo.handleUserModalShow({ isAdd: "", isShow: false });
+    props.modalInfo.handleUserModalShow({ isAdd: undefined, isShow: false });
   };
   const validateInfoUser = () => {
     let rx = /\S+@\S+\.\S+/;
     let emailInp = validation.email;
-    let lstN = validation.lstN;
-    let frstN = validation.frstN;
+    let lastName = validation.lastName;
+    let firstName = validation.firstName;
     if (email !== "" && rx.test(email)) {
       emailInp = true;
     } else emailInp = false;
-    if (name.frstName !== "") {
-      frstN = true;
-    } else frstN = false;
-    if (name.lstName !== "") {
-      lstN = true;
-    } else lstN = false;
-    setValidate({ email: emailInp, frstN, lstN });
+    if (name.firstName !== "") {
+      firstName = true;
+    } else firstName = false;
+    if (name.lastName !== "") {
+      lastName = true;
+    } else lastName = false;
+    setValidate({ email: emailInp, firstName, lastName });
   };
   const handleInputChange = (event) => {
-    setIsSubmitted(false);
     if (event.target.name === "email") {
       setEmail(event.target.value);
     } else if (event.target.name === "firstName") {
-      setName({
-        firstName: event.target.value,
-        lastName: name.lastName,
-      });
+      setName((pre) => ({ ...pre, firstName: event.target.value }));
     } else if (event.target.name === "lastName") {
-      setName({
-        firstName: name.firstName,
+      setName((pre) => ({
+        ...pre,
         lastName: event.target.value,
-      });
+      }));
     }
-    isValid =
-      isSubmitted &&
-      validation.email === true &&
-      validation.firstName === true &&
-      validation.lastName === true;
   };
   const handleSubmit = async () => {
-    setIsSubmitted(true);
+    setIsCheck(true);
     if (
       validation.email === true &&
-      validation.frstN === true &&
-      validation.lstN === true &&
+      validation.firstName === true &&
+      validation.lastName === true &&
       isWaiting === false
     ) {
-      console.log(validation);
       setIsWaiting(true);
-      const res = await creatUser(email, name.frstName, name.lstName);
-      if (res.id) {
-        setIsWaiting(false);
-        handleClose();
-        console.log(res);
-      } else console.log("err");
+      if (isAdd) {
+        const res = await creatUser(email, name.firstName, name.lastName);
+        if (res.id) {
+          handleAddNewUser({
+            id: res.id,
+            email: email,
+            first_name: name.firstName,
+            last_name: name.lastName,
+          });
+          toast.success("User created ", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          handleClose();
+        } else {
+          console.log(res);
+          toast.error("Error ...", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      } else {
+        //edit
+      }
+
+      setIsWaiting(false);
+      setEmail("");
+      setName({ firstName: "", lastName: "" });
+      setIsCheck(false);
+      setValidate({
+        email: undefined,
+        firstName: undefined,
+        lastName: undefined,
+      });
     }
   };
 
   useEffect(() => {
-    if (isSubmitted) {
+    if (isCheck) {
       validateInfoUser();
     }
-  }, [isSubmitted, email, name.firstName, name.lastName]);
-  let isValid = true;
+  }, [email, name.firstName, name.lastName, isCheck]);
   return (
     <>
       <Modal show={isShow} onHide={handleClose}>
@@ -100,7 +133,7 @@ const Modal_EditLoginUser = (props) => {
                   border: validation.email === false && "2px solid #d98a8a",
                 }}
               />
-              {validation.email == false && (
+              {validation.email === false && (
                 <div
                   className="col-12 "
                   style={{
@@ -117,14 +150,14 @@ const Modal_EditLoginUser = (props) => {
               <Form.Control
                 type="text"
                 placeholder="Your First name"
-                value={name.frstName}
+                value={name.firstName}
                 name="firstName"
                 onChange={handleInputChange}
                 style={{
-                  border: validation.frstN === false && "2px solid #d98a8a",
+                  border: validation.firstName === false && "2px solid #d98a8a",
                 }}
               />
-              {validation.frstN == false && (
+              {validation.firstName === false && (
                 <div
                   className="col-12 "
                   style={{
@@ -141,14 +174,14 @@ const Modal_EditLoginUser = (props) => {
               <Form.Control
                 type="text"
                 placeholder="Your Last name"
-                value={name.lstName}
+                value={name.lastName}
                 name="lastName"
                 onChange={handleInputChange}
                 style={{
-                  border: validation.lstN === false && "2px solid #d98a8a",
+                  border: validation.lastName === false && "2px solid #d98a8a",
                 }}
               />
-              {validation.lstN == false && (
+              {validation.lastName === false && (
                 <div
                   className="col-12 "
                   style={{
@@ -174,7 +207,7 @@ const Modal_EditLoginUser = (props) => {
             variant="primary"
             onClick={handleSubmit}
             aria-label="Submit form"
-            disabled={!isValid}
+            // disabled={!isValid}
           >
             {isWaiting ? (
               <i className="fa-solid fa-spinner fa-spin-pulse"></i>
@@ -186,6 +219,7 @@ const Modal_EditLoginUser = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer />
     </>
   );
 };
