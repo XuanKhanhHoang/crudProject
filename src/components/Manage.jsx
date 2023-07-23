@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Button, Container, Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import { fetchAllUsers } from "../services/UserServices";
+import { deleteUser, fetchAllUsers } from "../services/UserServices";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
-import Modal_EditLoginUser from "./Modal_EditLoginUser";
+import Modal_AddEditUser from "./Modal_AddEditUser";
 function Manage(props) {
   const pageOffset = 0;
   const [userList, setUserList] = useState([]);
@@ -15,12 +15,20 @@ function Manage(props) {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [editingUserData, setEditingUserData] = useState({});
   useEffect(() => {
     getUser(1);
   }, []);
+  useEffect(() => {
+    if (!UserModalInfo.isShow) {
+      let item = userList.map((item) =>
+        item.id == editingUserData.id ? editingUserData : item
+      );
+      setUserList(item);
+    }
+  }, [editingUserData]);
   const getUser = async (page) => {
     let res = await fetchAllUsers(page);
-    // console.log(res);
     if (res && res.data) {
       setUserList(res.data);
       setTotalPage(res.total_pages);
@@ -33,16 +41,20 @@ function Manage(props) {
   const handlePageChange = (props) => {
     getUser(+props.selected + 1);
   };
-  const handleShowAddNewUserModal = () => {
-    handleUserModalShow({ isAdd: true, isShow: true });
-  };
   const handleAddNewUser = (user) => {
     setUserList([user, ...userList]);
   };
-  const handleEditUser = () => {
+  const handleEditUser = (user) => {
+    setEditingUserData(user);
     handleUserModalShow({ isAdd: false, isShow: true });
   };
-  const handleDeleteUser = () => {};
+  const handleDeleteUser = async (user) => {
+    let res = await deleteUser(user.id);
+    if (res.status === 204) {
+      let item = userList.filter((item) => item.id !== user.id);
+      setUserList(item);
+    }
+  };
   return (
     <Container className="mt-2">
       <div className="d-flex justify-content-between mb-2">
@@ -50,17 +62,19 @@ function Manage(props) {
         <Button
           variant="success"
           className=""
-          onClick={handleShowAddNewUserModal}
+          onClick={() => handleUserModalShow({ isAdd: true, isShow: true })}
         >
           Add new User
         </Button>
       </div>
-      <Modal_EditLoginUser
+      <Modal_AddEditUser
         modalInfo={{
           UserModalInfo,
           handleUserModalShow,
         }}
         handleAddNewUser={handleAddNewUser}
+        editingUserData={editingUserData}
+        setEditingUserData={setEditingUserData}
       />
       <Table striped bordered hover>
         <thead>
@@ -87,14 +101,14 @@ function Manage(props) {
                       <Button
                         variant="warning"
                         className="me-1 mb-1"
-                        onClick={handleEditUser}
+                        onClick={() => handleEditUser(user)}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="danger"
                         className="mb-1"
-                        onClick={handleDeleteUser}
+                        onClick={() => handleDeleteUser(user)}
                       >
                         Delete
                       </Button>

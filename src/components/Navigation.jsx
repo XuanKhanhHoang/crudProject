@@ -2,7 +2,7 @@ import "../styles/Navigation.scss";
 import vnLogo_Img from "../assets/vietnam-flat-rounded-flag-icon-with-transparent-background-free-png.png";
 import enLogo_Img from "../assets/flag-of-the-united-kingdom-flags-of-the-world-nordic-cross-flag-united-kingdom-d00246040eb432dc3d45e446354454ec.png";
 import logo from "../assets/logoMain.jpg";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -19,8 +19,12 @@ function Navigation() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav ">
             <Nav className="me-auto text-center col-12">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="manage">Manage</Nav.Link>
+              <Nav.Link to="/" as={NavLink}>
+                Home
+              </Nav.Link>
+              <Nav.Link to="/manage" as={NavLink}>
+                Manage
+              </Nav.Link>
               <Dropdown className="me-lg-3 ms-md-auto my-0 mx-auto">
                 <Dropdown.Toggle variant="dark flex-nowrap" id="dropdown-basic">
                   <img

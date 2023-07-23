@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { Form } from "react-bootstrap";
-import { creatUser } from "../services/UserServices";
+import { creatUser, editUser } from "../services/UserServices";
 
 import { ToastContainer, toast } from "react-toastify";
-const Modal_EditLoginUser = (props) => {
+const Modal_AddEditUser = (props) => {
   const isAdd = props.modalInfo.UserModalInfo.isAdd;
   const isShow = props.modalInfo.UserModalInfo.isShow;
+  const edittingUserData = props.editingUserData;
   const handleAddNewUser = props.handleAddNewUser;
+  const setEditingUserData = props.setEditingUserData;
+
   const [name, setName] = useState({ firstName: "", lastName: "" });
   const [email, setEmail] = useState("");
   const [validation, setValidate] = useState({
@@ -17,10 +20,15 @@ const Modal_EditLoginUser = (props) => {
     lastName: undefined,
   });
   const [isWaiting, setIsWaiting] = useState(false);
-
   const [isCheck, setIsCheck] = useState(false);
+  const handleEditUser = (user) => {
+    setEditingUserData(user);
+  };
   const handleClose = () => {
     props.modalInfo.handleUserModalShow({ isAdd: undefined, isShow: false });
+    setEmail("");
+    setName({ firstName: "", lastName: "" });
+    setEditingUserData({});
   };
   const validateInfoUser = () => {
     let rx = /\S+@\S+\.\S+/;
@@ -51,7 +59,7 @@ const Modal_EditLoginUser = (props) => {
     }
   };
   const handleSubmit = async () => {
-    setIsCheck(true);
+    if (isAdd) setIsCheck(true);
     if (
       validation.email === true &&
       validation.firstName === true &&
@@ -93,12 +101,42 @@ const Modal_EditLoginUser = (props) => {
           });
         }
       } else {
-        //edit
+        const res = await editUser(email, name.firstName, name.lastName);
+        if (res.updatedAt) {
+          handleEditUser({
+            id: edittingUserData.id,
+            email: email,
+            first_name: name.firstName,
+            last_name: name.lastName,
+          });
+          toast.success("User updated ", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          handleClose();
+        } else {
+          console.log(res);
+          toast.error("Error ...", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
       }
 
       setIsWaiting(false);
-      setEmail("");
-      setName({ firstName: "", lastName: "" });
+
       setIsCheck(false);
       setValidate({
         email: undefined,
@@ -113,6 +151,16 @@ const Modal_EditLoginUser = (props) => {
       validateInfoUser();
     }
   }, [email, name.firstName, name.lastName, isCheck]);
+  useEffect(() => {
+    if (!isAdd && isShow) {
+      setEmail(edittingUserData.email);
+      setName({
+        firstName: edittingUserData.first_name,
+        lastName: edittingUserData.last_name,
+      });
+      setIsCheck(true);
+    }
+  }, [edittingUserData]);
   return (
     <>
       <Modal show={isShow} onHide={handleClose}>
@@ -224,4 +272,4 @@ const Modal_EditLoginUser = (props) => {
   );
 };
 
-export default Modal_EditLoginUser;
+export default Modal_AddEditUser;

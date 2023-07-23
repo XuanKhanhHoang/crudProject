@@ -11,7 +11,7 @@ function Home() {
             <span className="textNotLoginNotify">
               You not login yet. Please login to manage it !
             </span>
-            <Link class="loginBtn col-4" to="login">
+            <Link className="loginBtn col-4" to="login">
               Login
             </Link>
           </div>
