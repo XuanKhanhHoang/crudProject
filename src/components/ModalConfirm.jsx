@@ -10,9 +10,9 @@ const ModalConfirm = (props) => {
     props;
   const user = handleUser.user;
   const [isWaiting, setIsWaiting] = useState(false);
-  const handleClose = () => {
-    handleUser.setEditingUserData({});
-    modalHandleShow.setConfirmModalIsShow(false);
+  const handleClose = async () => {
+    await handleUser.handleUser({});
+    modalHandleShow.handleModalShow(false);
   };
   const handleData = async () => {
     setIsWaiting(true);
@@ -48,9 +48,9 @@ const ModalConfirm = (props) => {
   };
   return (
     <>
-      <Modal show={modalHandleShow.confirmModalIsShow} onHide={handleClose}>
+      <Modal show={modalHandleShow.show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{`${title}`}</Modal.Title>
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{content}</Modal.Body>
         <Modal.Footer>

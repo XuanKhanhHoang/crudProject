@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { Button, Container, Row } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import { deleteUser, fetchAllUsers } from "../services/UserServices";
+import { fetchAllUsers } from "../services/UserServices";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
 import Modal_AddEditUser from "./Modal_AddEditUser";
+import ModalConfirm from "./ModalConfirm";
 function Manage(props) {
   const pageOffset = 0;
   const [userList, setUserList] = useState([]);
@@ -16,17 +17,18 @@ function Manage(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [editingUserData, setEditingUserData] = useState({});
+  const [deleteModalIsShow, setDeleteModalIsShow] = useState(false);
   useEffect(() => {
     getUser(1);
   }, []);
   useEffect(() => {
     if (!UserModalInfo.isShow) {
       let item = userList.map((item) =>
-        item.id == editingUserData.id ? editingUserData : item
+        item.id === editingUserData.id ? editingUserData : item
       );
       setUserList(item);
     }
-  }, [editingUserData]);
+  }, [editingUserData, UserModalInfo.isShow]);
   const getUser = async (page) => {
     let res = await fetchAllUsers(page);
     if (res && res.data) {
@@ -49,17 +51,8 @@ function Manage(props) {
     handleUserModalShow({ isAdd: false, isShow: true });
   };
   const handleDeleteUser = async (user) => {
-    setEditingUserData({
-      id: null,
-      email: "",
-      first_name: "",
-      last_name: "",
-    });
-    let res = await deleteUser(user.id);
-    if (res.status === 204) {
-      let item = userList.filter((item) => item.id !== user.id);
-      setUserList(item);
-    }
+    setEditingUserData(user);
+    setDeleteModalIsShow(true);
   };
   return (
     <Container className="mt-2">
@@ -81,6 +74,17 @@ function Manage(props) {
         handleAddNewUser={handleAddNewUser}
         editingUserData={editingUserData}
         setEditingUserData={setEditingUserData}
+      />
+      <ModalConfirm
+        title={"Delete user "}
+        content={`Delete user have id is ${editingUserData.id}`}
+        modalHandleShow={{
+          show: deleteModalIsShow,
+          handleModalShow: setDeleteModalIsShow,
+        }}
+        handleUser={{ user: editingUserData, handleUser: setEditingUserData }}
+        userList={userList}
+        setUserList={setUserList}
       />
       <Table striped bordered hover>
         <thead>
