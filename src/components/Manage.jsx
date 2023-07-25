@@ -49,6 +49,12 @@ function Manage(props) {
     handleUserModalShow({ isAdd: false, isShow: true });
   };
   const handleDeleteUser = async (user) => {
+    setEditingUserData({
+      id: null,
+      email: "",
+      first_name: "",
+      last_name: "",
+    });
     let res = await deleteUser(user.id);
     if (res.status === 204) {
       let item = userList.filter((item) => item.id !== user.id);

@@ -21,43 +21,6 @@ const Modal_AddEditUser = (props) => {
   });
   const [isWaiting, setIsWaiting] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
-  const handleEditUser = (user) => {
-    setEditingUserData(user);
-  };
-  const handleClose = () => {
-    props.modalInfo.handleUserModalShow({ isAdd: undefined, isShow: false });
-    setEmail("");
-    setName({ firstName: "", lastName: "" });
-    setEditingUserData({});
-  };
-  const validateInfoUser = () => {
-    let rx = /\S+@\S+\.\S+/;
-    let emailInp = validation.email;
-    let lastName = validation.lastName;
-    let firstName = validation.firstName;
-    if (email !== "" && rx.test(email)) {
-      emailInp = true;
-    } else emailInp = false;
-    if (name.firstName !== "") {
-      firstName = true;
-    } else firstName = false;
-    if (name.lastName !== "") {
-      lastName = true;
-    } else lastName = false;
-    setValidate({ email: emailInp, firstName, lastName });
-  };
-  const handleInputChange = (event) => {
-    if (event.target.name === "email") {
-      setEmail(event.target.value);
-    } else if (event.target.name === "firstName") {
-      setName((pre) => ({ ...pre, firstName: event.target.value }));
-    } else if (event.target.name === "lastName") {
-      setName((pre) => ({
-        ...pre,
-        lastName: event.target.value,
-      }));
-    }
-  };
   const handleSubmit = async () => {
     if (isAdd) setIsCheck(true);
     if (
@@ -103,7 +66,7 @@ const Modal_AddEditUser = (props) => {
       } else {
         const res = await editUser(email, name.firstName, name.lastName);
         if (res.updatedAt) {
-          handleEditUser({
+          await setEditingUserData({
             id: edittingUserData.id,
             email: email,
             first_name: name.firstName,
@@ -145,7 +108,42 @@ const Modal_AddEditUser = (props) => {
       });
     }
   };
+  const handleInputChange = (event) => {
+    if (event.target.name === "email") {
+      setEmail(event.target.value);
+    } else if (event.target.name === "firstName") {
+      setName((pre) => ({ ...pre, firstName: event.target.value }));
+    } else if (event.target.name === "lastName") {
+      setName((pre) => ({
+        ...pre,
+        lastName: event.target.value,
+      }));
+    }
+  };
+  const validateInfoUser = () => {
+    let rx = /\S+@\S+\.\S+/;
+    let emailInp = validation.email;
+    let lastName = validation.lastName;
+    let firstName = validation.firstName;
+    if (email !== "" && rx.test(email)) {
+      emailInp = true;
+    } else emailInp = false;
+    if (name.firstName !== "") {
+      firstName = true;
+    } else firstName = false;
+    if (name.lastName !== "") {
+      lastName = true;
+    } else lastName = false;
+    setValidate({ email: emailInp, firstName, lastName });
+  };
 
+  const handleClose = () => {
+    setEmail("");
+    setName({ firstName: "", lastName: "" });
+    // setEditingUserData({ id: null, email: "", first_name: "", last_name: "" });
+    setIsCheck(false);
+    props.modalInfo.handleUserModalShow({ isAdd: undefined, isShow: false });
+  };
   useEffect(() => {
     if (isCheck) {
       validateInfoUser();
@@ -158,9 +156,10 @@ const Modal_AddEditUser = (props) => {
         firstName: edittingUserData.first_name,
         lastName: edittingUserData.last_name,
       });
+      setEditingUserData(edittingUserData);
       setIsCheck(true);
     }
-  }, [edittingUserData]);
+  }, [edittingUserData, isAdd, isShow]);
   return (
     <>
       <Modal show={isShow} onHide={handleClose}>
