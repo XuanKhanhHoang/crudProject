@@ -5,6 +5,7 @@ import { Form } from "react-bootstrap";
 import { creatUser, editUser } from "../services/UserServices";
 
 import { ToastContainer, toast } from "react-toastify";
+import { checkValidEmail } from "../utils/checkFormValid";
 const Modal_AddEditUser = (props) => {
   const isAdd = props.modalInfo.UserModalInfo.isAdd;
   const isShow = props.modalInfo.UserModalInfo.isShow;
@@ -24,9 +25,9 @@ const Modal_AddEditUser = (props) => {
   const handleSubmit = async () => {
     if (isAdd) setIsCheck(true);
     if (
-      validation.email === true &&
-      validation.firstName === true &&
-      validation.lastName === true &&
+      name.lastName !== "" &&
+      name.firstName !== "" &&
+      checkValidEmail(email) &&
       isWaiting === false
     ) {
       setIsWaiting(true);
@@ -121,11 +122,10 @@ const Modal_AddEditUser = (props) => {
     }
   };
   const validateInfoUser = () => {
-    let rx = /\S+@\S+\.\S+/;
     let emailInp = validation.email;
     let lastName = validation.lastName;
     let firstName = validation.firstName;
-    if (email !== "" && rx.test(email)) {
+    if (checkValidEmail(email)) {
       emailInp = true;
     } else emailInp = false;
     if (name.firstName !== "") {
@@ -266,7 +266,7 @@ const Modal_AddEditUser = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 };

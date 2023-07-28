@@ -2,12 +2,9 @@
   color: black;
 }
 .app-container {
-  .errorTextNofty {
-    font-size: 12px;
-    color: #d98a8a;
-    display: none;
-  }
-  .errorLoginBorderNofty {
-    border: 2px solid #d98a8a;
+  #loginBtnSubmit {
+    width: 200px;
+    margin: 0 auto !important;
+    display: block;
   }
 }

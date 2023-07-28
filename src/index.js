@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import Manage from "./components/Manage";
+import Login from "./components/Login";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ root.render(
         <Route path="/" element={<App />}>
           <Route path="" element={<Home />}></Route>
           <Route path="manage" element={<Manage />}></Route>
+          <Route path="login" element={<Login />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

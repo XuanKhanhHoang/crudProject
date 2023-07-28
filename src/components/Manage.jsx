@@ -7,7 +7,6 @@ import ReactPaginate from "react-paginate";
 import Modal_AddEditUser from "./Modal_AddEditUser";
 import ModalConfirm from "./ModalConfirm";
 function Manage(props) {
-  const pageOffset = 0;
   const [userList, setUserList] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [UserModalInfo, handleUserModalShow] = useState({
@@ -156,7 +155,7 @@ function Manage(props) {
         onPageChange={handlePageChange}
         containerClassName="pagination"
         activeClassName="active"
-        forcePage={pageOffset}
+        forcePage={0}
       />
     </Container>
   );
