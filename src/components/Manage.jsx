@@ -55,16 +55,6 @@ function Manage(props) {
   };
   return (
     <Container className="mt-2">
-      <div className="d-flex justify-content-between mb-2">
-        <span className="my-auto">List Users: </span>
-        <Button
-          variant="success"
-          className=""
-          onClick={() => handleUserModalShow({ isAdd: true, isShow: true })}
-        >
-          Add new User
-        </Button>
-      </div>
       <Modal_AddEditUser
         modalInfo={{
           UserModalInfo,
@@ -85,6 +75,17 @@ function Manage(props) {
         userList={userList}
         setUserList={setUserList}
       />
+      <div className="d-flex justify-content-between mb-2">
+        <span className="my-auto">List Users: </span>
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <Button
+          variant="success"
+          className=""
+          onClick={() => handleUserModalShow({ isAdd: true, isShow: true })}
+        >
+          Add new User
+        </Button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>

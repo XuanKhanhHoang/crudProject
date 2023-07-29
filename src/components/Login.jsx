@@ -82,7 +82,9 @@ const Login = () => {
         password: password != "",
       });
   }, [email, password, check]);
-
+  useEffect(() => {
+    if (localStorage.getItem("token")) navigate("/manage");
+  }, []);
   return (
     <>
       <Container className="mt-3 ">
