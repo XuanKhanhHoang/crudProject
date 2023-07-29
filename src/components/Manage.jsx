@@ -6,6 +6,7 @@ import { useState } from "react";
 import ReactPaginate from "react-paginate";
 import Modal_AddEditUser from "./Modal_AddEditUser";
 import ModalConfirm from "./ModalConfirm";
+import { useNavigate, useParams } from "react-router-dom";
 function Manage(props) {
   const [userList, setUserList] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
@@ -17,9 +18,17 @@ function Manage(props) {
   const [isError, setIsError] = useState(false);
   const [editingUserData, setEditingUserData] = useState({});
   const [deleteModalIsShow, setDeleteModalIsShow] = useState(false);
+  const navigate = useNavigate();
+  const { page } = useParams();
   useEffect(() => {
-    getUser(1);
+    if (page === undefined) navigate("./1");
   }, []);
+  useEffect(() => {
+    console.log(page);
+    let tempPage = page;
+    if (!page) tempPage = 1;
+    getUser(tempPage);
+  }, [page]);
   useEffect(() => {
     if (!UserModalInfo.isShow) {
       let item = userList.map((item) =>
@@ -40,7 +49,7 @@ function Manage(props) {
     setIsLoading(false);
   };
   const handlePageChange = (props) => {
-    getUser(+props.selected + 1);
+    navigate(`/manage/${+props.selected + 1}`);
   };
   const handleAddNewUser = (user) => {
     setUserList([user, ...userList]);
@@ -77,7 +86,7 @@ function Manage(props) {
       />
       <div className="d-flex justify-content-between mb-2">
         <span className="my-auto">List Users: </span>
-        <i class="fa fa-search" aria-hidden="true"></i>
+        <i className="fa fa-search" aria-hidden="true"></i>
         <Button
           variant="success"
           className=""
@@ -156,7 +165,7 @@ function Manage(props) {
         onPageChange={handlePageChange}
         containerClassName="pagination"
         activeClassName="active"
-        forcePage={0}
+        initialPage={page - 1}
       />
     </Container>
   );

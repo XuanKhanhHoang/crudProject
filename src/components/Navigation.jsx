@@ -22,7 +22,7 @@ function Navigation() {
               <Nav.Link to="/" as={NavLink}>
                 Home
               </Nav.Link>
-              <Nav.Link to="/manage" as={NavLink}>
+              <Nav.Link to="/manage/1" as={NavLink}>
                 Manage
               </Nav.Link>
               <Dropdown className="me-lg-3 ms-md-auto my-0 mx-auto">
