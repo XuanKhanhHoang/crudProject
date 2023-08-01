@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUsers } from "../services/UserServices";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
-import Modal_AddEditUser from "./Modal_AddEditUser";
+import Modal_AddEditUser from "./ModalAddEditUser";
 import ModalConfirm from "./ModalConfirm";
 import { useNavigate, useParams } from "react-router-dom";
 function Manage(props) {
@@ -24,9 +24,9 @@ function Manage(props) {
     if (page === undefined) navigate("./1");
   }, []);
   useEffect(() => {
-    console.log(page);
     let tempPage = page;
     if (!page) tempPage = 1;
+    document.getElementById("seachingManage").value = "";
     getUser(tempPage);
   }, [page]);
   useEffect(() => {
@@ -62,6 +62,20 @@ function Manage(props) {
     setEditingUserData(user);
     setDeleteModalIsShow(true);
   };
+  const handleSearchUser = (event) => {
+    let waitingSearch;
+    clearTimeout(waitingSearch);
+    waitingSearch = setTimeout(() => {
+      let res;
+      let keyword = event.target.value;
+      if (keyword != "") {
+        res = userList.filter((user) => user.email.includes(keyword));
+        setUserList(res);
+      } else {
+        getUser(page);
+      }
+    }, 500);
+  };
   return (
     <Container className="mt-2">
       <Modal_AddEditUser
@@ -83,10 +97,19 @@ function Manage(props) {
         handleUser={{ user: editingUserData, handleUser: setEditingUserData }}
         userList={userList}
         setUserList={setUserList}
-      />
+      />{" "}
+      <div className="col-12 col-sm-6">
+        <input
+          className="form-control "
+          type="text"
+          placeholder="Seaching by email here ..."
+          id="seachingManage"
+          onChange={handleSearchUser}
+        ></input>
+      </div>
       <div className="d-flex justify-content-between mb-2">
         <span className="my-auto">List Users: </span>
-        <i className="fa fa-search" aria-hidden="true"></i>
+
         <Button
           variant="success"
           className=""
@@ -100,7 +123,12 @@ function Manage(props) {
           <tr>
             <th>ID</th>
             <th>Email</th>
-            <th>First Name</th>
+            <th>
+              <div className="">
+                <span>First Name</span>{" "}
+                <i class="fa-solid fa-arrow-up-z-a "></i>
+              </div>
+            </th>
             <th>Last Name</th>
             <th>Action</th>
           </tr>

@@ -14,7 +14,7 @@ const ModalConfirm = (props) => {
     await handleUser.handleUser({});
     modalHandleShow.handleModalShow(false);
   };
-  const handleData = async () => {
+  const handleSubmit = async () => {
     setIsWaiting(true);
     let res = await deleteUser(user.id);
     if (res.status === 204) {
@@ -57,7 +57,7 @@ const ModalConfirm = (props) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleData}>
+          <Button variant="primary" onClick={handleSubmit}>
             {isWaiting ? (
               <i className="fa-solid fa-spinner fa-spin-pulse"></i>
             ) : (

@@ -17,7 +17,6 @@ const Login = () => {
   });
   const [check, setCheck] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
-  // const [isToasting,setIsToating] =useState(false);
   const navigate = useNavigate();
   const handleInputChange = (event) => {
     if (event.target.name === "loginEmailInp") {

@@ -13,7 +13,7 @@ function Navigation() {
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand to="/home" as={NavLink}>
             <img alt="" className="logo" srcSet={logo} />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -25,6 +25,11 @@ function Navigation() {
               <Nav.Link to="/manage/1" as={NavLink}>
                 Manage
               </Nav.Link>
+              {/* {localStorage.getItem("email") && (
+                <Nav.Link className="d-none d-lg-block ms-5">
+                  Hello {localStorage.getItem("email")}
+                </Nav.Link>
+              )} */}
               <Dropdown className="me-lg-3 ms-md-auto my-0 mx-auto">
                 <Dropdown.Toggle variant="dark flex-nowrap" id="dropdown-basic">
                   <img
@@ -65,7 +70,14 @@ function Navigation() {
                     Something
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">
+                  <NavDropdown.Item
+                    to="/"
+                    as={Link}
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("email");
+                    }}
+                  >
                     Log out
                   </NavDropdown.Item>
                 </div>
