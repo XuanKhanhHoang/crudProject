@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUsers } from "../services/UserServices";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
-import Modal_AddEditUser from "./ModalAddEditUser";
+import ModalAddEditUser from "./ModalAddEditUser";
 import ModalConfirm from "./ModalConfirm";
 import { useNavigate, useParams } from "react-router-dom";
 function Manage(props) {
@@ -20,6 +20,7 @@ function Manage(props) {
   const [deleteModalIsShow, setDeleteModalIsShow] = useState(false);
   const navigate = useNavigate();
   const { page } = useParams();
+  let sortStateField = { field: undefined, state: undefined };
   useEffect(() => {
     if (page === undefined) navigate("./1");
   }, []);
@@ -76,9 +77,19 @@ function Manage(props) {
       }
     }, 500);
   };
+  const handleSortUser = (type, field) => {
+    let list = userList;
+    if (type === "asc") {
+      list.sort((a, b) => +(a[field] > b[field]) || -(a[field] < b[field]));
+      setUserList([...list]);
+    } else if (type === "desc") {
+      list.sort((a, b) => +(a[field] < b[field]) || -(a[field] > b[field]));
+      setUserList([...list]);
+    }
+  };
   return (
     <Container className="mt-2">
-      <Modal_AddEditUser
+      <ModalAddEditUser
         modalInfo={{
           UserModalInfo,
           handleUserModalShow,
@@ -122,11 +133,34 @@ function Manage(props) {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Email</th>
+            <th>
+              <div className="">
+                <span>Email</span>{" "}
+                <i
+                  className="fa-solid fa-arrow-down-a-z p-2 pb-1"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSortUser("asc", "email")}
+                ></i>
+                <i
+                  className="fa-solid fa-arrow-down-z-a p-2 pb-1"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSortUser("desc", "email")}
+                ></i>
+              </div>
+            </th>
             <th>
               <div className="">
                 <span>First Name</span>{" "}
-                <i class="fa-solid fa-arrow-up-z-a "></i>
+                <i
+                  className="fa-solid fa-arrow-down-a-z p-2 pb-1"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSortUser("asc", "first_name")}
+                ></i>
+                <i
+                  className="fa-solid fa-arrow-down-z-a p-2 pb-1"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSortUser("desc", "first_name")}
+                ></i>
               </div>
             </th>
             <th>Last Name</th>
