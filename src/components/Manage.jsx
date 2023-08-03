@@ -188,8 +188,8 @@ function Manage(props) {
             userList.length > 0 &&
             userList.map((user, index) => {
               return (
-                <>
-                  <tr key={`user+${index}`}>
+                <React.Fragment key={`user-${user.id}`}>
+                  <tr>
                     <td
                       style={
                         index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
@@ -245,7 +245,7 @@ function Manage(props) {
                   </tr>
                   <tr className="d-md-none">
                     <td
-                      colspan="3"
+                      colSpan="3"
                       style={
                         index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
                       }
@@ -256,7 +256,7 @@ function Manage(props) {
                   </tr>
                   <tr className="d-md-none">
                     <td
-                      colspan="3"
+                      colSpan="3"
                       style={
                         index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
                       }
@@ -265,7 +265,7 @@ function Manage(props) {
                       {user.last_name}
                     </td>
                   </tr>
-                </>
+                </React.Fragment>
               );
             })}
         </tbody>
