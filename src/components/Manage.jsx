@@ -8,7 +8,7 @@ import ModalAddEditUser from "./ModalAddEditUser";
 import ModalConfirm from "./ModalConfirm";
 import { useNavigate, useParams } from "react-router-dom";
 import { CSVLink } from "react-csv";
-function Manage(props) {
+function Manage() {
   const [userList, setUserList] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [UserModalInfo, handleUserModalShow] = useState({

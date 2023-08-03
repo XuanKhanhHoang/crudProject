@@ -1,14 +1,21 @@
-import { Routes, Route, Outlet } from "react-router-dom";
 import "./App.scss";
-import Navigation from "./components/Navigation";
 import { ToastContainer } from "react-toastify";
-
+import { useContext, useEffect } from "react";
+import { UserContext } from "./context/UserContext";
+import AppRouters from "./routes/AppRouters";
 function App() {
+  const { login } = useContext(UserContext);
+  useEffect(() => {
+    let email = localStorage.getItem("email");
+    let token = localStorage.getItem("token");
+    if (email && token) {
+      login(email, token);
+    }
+  }, [login]);
   return (
     <div className="app-container">
-      <Navigation />
+      <AppRouters />
       <ToastContainer />
-      <Outlet />
     </div>
   );
 }

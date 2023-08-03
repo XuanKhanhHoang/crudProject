@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Col, Container, FormCheck, Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,6 +8,7 @@ import { userLogin } from "../services/UserServices";
 
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +18,7 @@ const Login = () => {
   });
   const [check, setCheck] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
+  const { login } = useContext(UserContext);
   const navigate = useNavigate();
   const handleInputChange = (event) => {
     if (event.target.name === "loginEmailInp") {
@@ -33,8 +35,7 @@ const Login = () => {
       setIsWaiting(true);
       let res = await userLogin(email, password);
       if (res.token) {
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("email", email);
+        login(email, res.token);
         toast.success(
           "Login succesful ",
           {
