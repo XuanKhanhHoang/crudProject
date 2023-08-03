@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { Form } from "react-bootstrap";
 import { creatUser, editUser } from "../services/UserServices";
 
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { checkValidEmail } from "../utils/checkFormValid";
 const Modal_AddEditUser = (props) => {
   const isAdd = props.modalInfo.UserModalInfo.isAdd;
@@ -140,7 +140,6 @@ const Modal_AddEditUser = (props) => {
   const handleClose = () => {
     setEmail("");
     setName({ firstName: "", lastName: "" });
-    // setEditingUserData({ id: null, email: "", first_name: "", last_name: "" });
     setIsCheck(false);
     props.modalInfo.handleUserModalShow({ isAdd: undefined, isShow: false });
   };
@@ -254,7 +253,6 @@ const Modal_AddEditUser = (props) => {
             variant="primary"
             onClick={handleSubmit}
             aria-label="Submit form"
-            // disabled={!isValid}
           >
             {isWaiting ? (
               <i className="fa-solid fa-spinner fa-spin-pulse"></i>

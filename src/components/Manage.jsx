@@ -7,6 +7,7 @@ import ReactPaginate from "react-paginate";
 import ModalAddEditUser from "./ModalAddEditUser";
 import ModalConfirm from "./ModalConfirm";
 import { useNavigate, useParams } from "react-router-dom";
+import { CSVLink } from "react-csv";
 function Manage(props) {
   const [userList, setUserList] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
@@ -20,7 +21,6 @@ function Manage(props) {
   const [deleteModalIsShow, setDeleteModalIsShow] = useState(false);
   const navigate = useNavigate();
   const { page } = useParams();
-  let sortStateField = { field: undefined, state: undefined };
   useEffect(() => {
     if (page === undefined) navigate("./1");
   }, []);
@@ -118,18 +118,34 @@ function Manage(props) {
           onChange={handleSearchUser}
         ></input>
       </div>
-      <div className="d-flex justify-content-between mb-2">
+      <div className="d-flex justify-content-between my-2">
         <span className="my-auto">List Users: </span>
-
-        <Button
-          variant="success"
-          className=""
-          onClick={() => handleUserModalShow({ isAdd: true, isShow: true })}
-        >
-          Add new User
-        </Button>
+        <div className="btnTopMangaUser">
+          <CSVLink
+            data={userList}
+            filename={"userList.csv"}
+            headers={[
+              { label: "ID", key: "id" },
+              { label: "Email", key: "email" },
+              { label: "First Name", key: "first_name" },
+              { label: "Last Name", key: "last_name" },
+            ]}
+            className="btn btn-warning text-white me-3"
+            target="_blank"
+          >
+            <i className="fa-solid fa-file-export me-1"></i>
+            Export CSV
+          </CSVLink>
+          <Button
+            variant="success"
+            className=""
+            onClick={() => handleUserModalShow({ isAdd: true, isShow: true })}
+          >
+            Add new User
+          </Button>
+        </div>
       </div>
-      <Table striped bordered hover>
+      <Table bordered hover>
         <thead>
           <tr>
             <th>ID</th>
@@ -148,8 +164,8 @@ function Manage(props) {
                 ></i>
               </div>
             </th>
-            <th>
-              <div className="">
+            <th className="d-none d-md-table-cell">
+              <div style={{ minWidth: "155px" }}>
                 <span>First Name</span>{" "}
                 <i
                   className="fa-solid fa-arrow-down-a-z p-2 pb-1"
@@ -163,7 +179,7 @@ function Manage(props) {
                 ></i>
               </div>
             </th>
-            <th>Last Name</th>
+            <th className="d-none d-md-table-cell">Last Name</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -172,30 +188,84 @@ function Manage(props) {
             userList.length > 0 &&
             userList.map((user, index) => {
               return (
-                <tr key={`user+${index}`}>
-                  <td>{user.id}</td>
-                  <td>{user.email}</td>
-                  <td>{user.first_name}</td>
-                  <td>{user.last_name}</td>
-                  <td>
-                    <div className="btnGroup-action">
-                      <Button
-                        variant="warning"
-                        className="me-1 mb-1"
-                        onClick={() => handleEditUser(user)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="danger"
-                        className="mb-1"
-                        onClick={() => handleDeleteUser(user)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
+                <>
+                  <tr key={`user+${index}`}>
+                    <td
+                      style={
+                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
+                      }
+                    >
+                      {user.id}
+                    </td>
+                    <td
+                      style={
+                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
+                      }
+                    >
+                      {user.email}
+                    </td>
+                    <td
+                      className="d-none d-md-table-cell"
+                      style={
+                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
+                      }
+                    >
+                      {user.first_name}
+                    </td>
+                    <td
+                      className="d-none d-md-table-cell"
+                      style={
+                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
+                      }
+                    >
+                      {user.last_name}
+                    </td>
+                    <td
+                      style={
+                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
+                      }
+                    >
+                      <div className="btnGroup-action">
+                        <Button
+                          variant="warning"
+                          className="me-1 mb-1"
+                          onClick={() => handleEditUser(user)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          className="mb-1"
+                          onClick={() => handleDeleteUser(user)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr className="d-md-none">
+                    <td
+                      colspan="3"
+                      style={
+                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
+                      }
+                    >
+                      <span style={{ fontWeight: "700" }}>First name:</span>{" "}
+                      {user.first_name}
+                    </td>
+                  </tr>
+                  <tr className="d-md-none">
+                    <td
+                      colspan="3"
+                      style={
+                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
+                      }
+                    >
+                      <span style={{ fontWeight: "700" }}>Last name: </span>
+                      {user.last_name}
+                    </td>
+                  </tr>
+                </>
               );
             })}
         </tbody>
