@@ -141,7 +141,7 @@ function Manage() {
             className=""
             onClick={() => handleUserModalShow({ isAdd: true, isShow: true })}
           >
-            Add new User
+            <i className="fa-solid fa-circle-plus me-1"></i> Add new User
           </Button>
         </div>
       </div>

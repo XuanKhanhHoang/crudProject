@@ -3,22 +3,30 @@ import React from "react";
 const AboutMe = () => {
   return (
     <div className="about-me">
-      <h2>About Me</h2>
+      <h1>About Me</h1>
       <p>
-        Hello there! My name is [your name] and I am a student at [your
-        university or school]. I am currently pursuing a degree in [your major
-        or field of study] and I am in my [year in school] year of studies.
+        I am a third-year student majoring in Information Technology at Hanoi
+        National University. I am passionate about learning and exploring new
+        things, especially in the field of technology. I enjoy solving problems
+        and building new products that can help people.
       </p>
       <p>
-        When I am not studying, I love to [your hobbies or interests], such as
-        reading books, playing sports, or listening to music. I am also
-        passionate about [another interest or activity], which allows me to
-        [what you enjoy about this interest or activity].
+        During my studies, I have had the opportunity to participate in many
+        projects in information technology, including developing web
+        applications, designing database systems, and building artificial
+        intelligence models. I have also participated in many competitions in
+        information technology and have won a number of awards.
       </p>
       <p>
-        In the future, I hope to [your career goals or aspirations]. I believe
-        that [your philosophy or belief about life or work], and I am excited to
-        see what the future holds.
+        After graduation, I hope to work in the field of technology, especially
+        in the field of artificial intelligence. I believe that artificial
+        intelligence has the potential to change the world in positive ways, and
+        I want to be a part of that change.
+      </p>
+      <p>
+        I am a sociable and approachable person. I am always willing to help
+        others and I am always eager to learn new things. I believe that I will
+        be a valuable member of any team.
       </p>
     </div>
   );

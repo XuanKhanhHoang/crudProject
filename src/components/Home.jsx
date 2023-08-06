@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import homeBackground from "../assets/logo512.png";
 import { Link } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { useSelector } from "react-redux";
 function Home() {
-  const { user } = useContext(UserContext);
+  const user = useSelector((state) => state.user.account);
   return (
     <>
       <div className="HomeInfo d-md-flex d-block mt-2">

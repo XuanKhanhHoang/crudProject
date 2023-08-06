@@ -1,14 +1,13 @@
-import React, { useContext, useEffect } from "react";
-import { Col, Container, FormCheck, Row } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import { checkValidEmail } from "../utils/checkFormValid";
-import { userLogin } from "../services/UserServices";
 
-import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { useDispatch, useSelector } from "react-redux";
+import { handleLoginRedux } from "../redux/actions/userAction";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,8 +16,10 @@ const Login = () => {
     password: undefined,
   });
   const [check, setCheck] = useState(false);
-  const [isWaiting, setIsWaiting] = useState(false);
-  const { login } = useContext(UserContext);
+  const [showPwd, setShowPwd] = useState(false);
+  const isLoading = useSelector((state) => state.user.isLoading);
+  const account = useSelector((state) => state.user.account);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleInputChange = (event) => {
     if (event.target.name === "loginEmailInp") {
@@ -30,61 +31,22 @@ const Login = () => {
   };
   const handleSubmitLogin = async () => {
     setCheck(true);
-    console.log(isWaiting);
-    if (checkValidEmail(email) && password != "" && isWaiting == false) {
-      setIsWaiting(true);
-      let res = await userLogin(email, password);
-      if (res.token) {
-        login(email, res.token);
-        toast.success(
-          "Login succesful ",
-          {
-            position: "top-right",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          },
-          { onclose: navigate("/manage") }
-        );
-
-        setIsWaiting(false);
-      } else {
-        let noftyText = "Error...";
-        if (res.response)
-          if (res.response.data)
-            if (res.response.data.error)
-              noftyText =
-                res.response.data.error[0].toUpperCase() +
-                res.response.data.error.slice(1);
-        toast.error(noftyText, {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-
-        setIsWaiting(false);
-      }
+    if (checkValidEmail(email) && password !== "" && isLoading === false) {
+      dispatch(handleLoginRedux(email, password));
     }
   };
   useEffect(() => {
     if (check)
       setValidInfo({
         email: checkValidEmail(email),
-        password: password != "",
+        password: password !== "",
       });
   }, [email, password, check]);
   useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/manage");
-  }, []);
+    if (account && account.auth) {
+      navigate("/manage");
+    }
+  }, [account]);
   return (
     <>
       <Container className="mt-3 ">
@@ -102,11 +64,11 @@ const Login = () => {
                 placeholder="Enter email"
                 style={{
                   border:
-                    check && validInfo.email == false && "2px solid #d98a8a",
+                    check && validInfo.email === false && "2px solid #d98a8a",
                 }}
               />
             </Col>
-            {check && validInfo.email == false && (
+            {check && validInfo.email === false && (
               <div
                 className="col-12 text-center"
                 style={{
@@ -126,20 +88,38 @@ const Login = () => {
             <Form.Label className=" text-center text-md-start" column sm={3}>
               Password
             </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="password"
+            <Col sm={8} style={{ position: "relative" }}>
+              <input
+                className="form-control "
+                type={showPwd ? "text" : "password"}
                 placeholder="Password"
                 name="loginPasswordlInp"
                 value={password}
                 onChange={handleInputChange}
                 style={{
                   border:
-                    check && validInfo.password == false && "2px solid #d98a8a",
+                    check &&
+                    validInfo.password === false &&
+                    "2px solid #d98a8a",
                 }}
-              />
+              ></input>
+              <i
+                class={
+                  `fa-regular showHidePwdLogin  fa-eye` +
+                  (showPwd ? "" : "-slash")
+                }
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  marginRight: "12px",
+                  padding: "11px 12px",
+                  cursor: "pointer",
+                }}
+                onClick={() => setShowPwd(!showPwd)}
+              ></i>
             </Col>
-            {check && validInfo.password == false && (
+            {check && validInfo.password === false && (
               <div
                 className="col-12 text-center"
                 style={{
@@ -172,9 +152,8 @@ const Login = () => {
             type="button"
             id="loginBtnSubmit"
             onClick={handleSubmitLogin}
-            // disabled={isWaiting}
           >
-            {isWaiting ? (
+            {isLoading ? (
               <i className="fa-solid fa-spinner fa-spin-pulse"></i>
             ) : (
               <>Submit</>

@@ -1,4 +1,3 @@
-import instance from "./custominze_axios";
 import axios from "./custominze_axios";
 
 const fetchAllUsers = async (page) => {

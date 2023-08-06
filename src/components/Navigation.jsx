@@ -8,12 +8,13 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Dropdown from "react-bootstrap/Dropdown";
-import { useContext } from "react";
-import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { USER_LOGOUT } from "../redux/actions/userAction";
 function Navigation() {
-  const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.account);
   const HandleLogInOut = () => {
     if (user.auth) {
       toast.success("Log out succesful", {
@@ -26,7 +27,9 @@ function Navigation() {
         progress: undefined,
         theme: "light",
       });
-      logout();
+      dispatch({
+        type: USER_LOGOUT,
+      });
       navigate("/");
     } else navigate("/login");
   };
