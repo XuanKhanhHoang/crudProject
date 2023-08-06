@@ -7,6 +7,7 @@ import Login from "../components/Login";
 import Navigation from "../components/Navigation";
 import PrivateRoutes from "./PrivateRoutes";
 import AboutMe from "../components/About";
+import PageNotFound from "../components/PageNotFound";
 const AppRouters = () => {
   return (
     <Routes>
@@ -18,6 +19,7 @@ const AppRouters = () => {
         <Route path="" element={<Home />}></Route>
         <Route path="login" element={<Login />}></Route>
         <Route path="about" element={<AboutMe />} />
+        <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
   );

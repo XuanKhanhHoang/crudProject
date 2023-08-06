@@ -8,12 +8,17 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { BrowserRouter } from "react-router-dom";
 import store from "./redux/store";
 import { Provider } from "react-redux";
+import ErrorBoundary from "./error-boundaries/error";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
-        <App />
+        <ErrorBoundary
+          fallback={<p className="text-center fs-3">Something went wrong</p>}
+        >
+          <App />
+        </ErrorBoundary>
       </BrowserRouter>
     </React.StrictMode>
   </Provider>
