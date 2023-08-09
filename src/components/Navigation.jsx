@@ -11,6 +11,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { USER_LOGOUT } from "../redux/actions/userAction";
+import { vietnamese } from "../language/vietnamese";
+import { english } from "../language/english";
+import { toEngLanguage, toViLanguage } from "../redux/actions/languageAction";
 function Navigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,6 +36,18 @@ function Navigation() {
       navigate("/");
     } else navigate("/login");
   };
+  const isViLanguage = useSelector((state) => state.language.isViLanguage);
+  const viLanguage = vietnamese.navigation;
+  const enLanguage = english.navigation;
+  const handleChangeLanguage = (language) => {
+    if (!isViLanguage) {
+      if (language === toEngLanguage) return;
+    }
+    if (isViLanguage) {
+      if (language === toViLanguage) return;
+    }
+    dispatch({ type: language });
+  };
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -48,11 +63,16 @@ function Navigation() {
                   className="m-auto d-block d-lg-none p-1"
                   style={{ fontFamily: "serif", color: "#999" }}
                 >
-                  Hello {user.email}
+                  {isViLanguage
+                    ? viLanguage.userUsingNofty
+                    : enLanguage.userUsingNofty}{" "}
+                  {user.email}
                 </Nav.Item>
               )}
               <Nav.Link className="fontWeight500" to="/" as={NavLink}>
-                Home
+                {isViLanguage
+                  ? viLanguage.homePageLink
+                  : enLanguage.homePageLink}
               </Nav.Link>
               {user.auth && (
                 <>
@@ -61,13 +81,13 @@ function Navigation() {
                     className="fontWeight500"
                     as={NavLink}
                   >
-                    Manage
+                    {isViLanguage ? viLanguage.manage : enLanguage.manage}
                   </Nav.Link>
                   <Nav.Item
                     className="m-auto d-none d-lg-block"
                     style={{ fontFamily: "serif", color: "#999" }}
                   >
-                    Hello {user.email}
+                    {isViLanguage ? "Xin chào" : "Hello"} {user.email}
                   </Nav.Item>
                 </>
               )}
@@ -80,45 +100,67 @@ function Navigation() {
                   />
                 </Dropdown.Toggle>
 
-                <Dropdown.Menu className="mt-1 show-Fade_in">
-                  <Dropdown.Item href="#/action-1">
+                <Dropdown.Menu
+                  className="mt-1 show-Fade_in"
+                  style={isViLanguage ? { fontFamily: "serif" } : {}}
+                >
+                  <Dropdown.Item
+                    onClick={() => handleChangeLanguage(toViLanguage)}
+                  >
                     <img
                       srcSet={vnLogo_Img}
                       alt=""
                       className="languageLogo vnLanguageLogo"
                     />
-                    Vietnamese
+                    {isViLanguage
+                      ? viLanguage.viLangName
+                      : enLanguage.viLangName}
                   </Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">
-                    {" "}
+                  <Dropdown.Item
+                    onClick={() => handleChangeLanguage(toEngLanguage)}
+                  >
                     <img
                       srcSet={enLogo_Img}
                       alt=""
                       className="languageLogo enLanguageLogo"
                     />
-                    English
+                    {isViLanguage
+                      ? viLanguage.enLangName
+                      : enLanguage.enLangName}
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
               <NavDropdown
-                title="More"
+                title={isViLanguage ? viLanguage.more : enLanguage.more}
                 id="basic-nav-dropdown"
-                className="mx-auto mx-lg-0 "
+                className="mx-auto mx-lg-0 fontWeight500 "
               >
                 <div className="show-Fade_in">
-                  <NavDropdown.Item href="/About">About</NavDropdown.Item>
+                  <NavDropdown.Item href="/About">
+                    {isViLanguage
+                      ? viLanguage.more_about
+                      : enLanguage.more_about}
+                  </NavDropdown.Item>
                   <NavDropdown.Item
                     href="https://github.com/XuanKhanhHoang/crudProject.git"
                     target="_blank"
                   >
-                    To my Github
+                    {isViLanguage
+                      ? viLanguage.more_toGithub
+                      : enLanguage.more_toGithub}
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item
                     className="fontWeight500"
                     onClick={HandleLogInOut}
                   >
-                    {user.auth ? <>Log out </> : <>Login</>}
+                    {user.auth
+                      ? isViLanguage
+                        ? viLanguage.logout
+                        : enLanguage.logout
+                      : isViLanguage
+                      ? viLanguage.login
+                      : enLanguage.login}
                   </NavDropdown.Item>
                 </div>
               </NavDropdown>

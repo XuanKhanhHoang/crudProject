@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { Form } from "react-bootstrap";
 import { creatUser, editUser } from "../services/UserServices";
-
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { checkValidEmail } from "../utils/checkFormValid";
 const Modal_AddEditUser = (props) => {
@@ -12,7 +12,6 @@ const Modal_AddEditUser = (props) => {
   const edittingUserData = props.editingUserData;
   const handleAddNewUser = props.handleAddNewUser;
   const setEditingUserData = props.setEditingUserData;
-
   const [name, setName] = useState({ firstName: "", lastName: "" });
   const [email, setEmail] = useState("");
   const [validation, setValidate] = useState({
@@ -22,6 +21,17 @@ const Modal_AddEditUser = (props) => {
   });
   const [isWaiting, setIsWaiting] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
+  const isViLanguage = useSelector((state) => state.language.isViLanguage);
+  const toastConfig = {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
   const handleSubmit = async () => {
     if (isAdd) setIsCheck(true);
     if (
@@ -40,29 +50,11 @@ const Modal_AddEditUser = (props) => {
             first_name: name.firstName,
             last_name: name.lastName,
           });
-          toast.success("User created ", {
-            position: "top-right",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+          toast.success("User created ", toastConfig);
           handleClose();
         } else {
           console.log(res);
-          toast.error("Error ...", {
-            position: "top-right",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+          toast.error("Error ...", toastConfig);
         }
       } else {
         const res = await editUser(email, name.firstName, name.lastName);
@@ -73,29 +65,11 @@ const Modal_AddEditUser = (props) => {
             first_name: name.firstName,
             last_name: name.lastName,
           });
-          toast.success("User updated ", {
-            position: "top-right",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+          toast.success("User updated ", toastConfig);
           handleClose();
         } else {
           console.log(res);
-          toast.error("Error ...", {
-            position: "top-right",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+          toast.error("Error ...", toastConfig);
         }
       }
 
@@ -163,12 +137,23 @@ const Modal_AddEditUser = (props) => {
     <>
       <Modal show={isShow} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{isAdd ? <>Add</> : <>Edit</>} User</Modal.Title>
+          <Modal.Title>
+            {isViLanguage
+              ? isAdd
+                ? "Thêm mới"
+                : "Chỉnh sửa"
+              : isAdd
+              ? "Add"
+              : "Edit"}
+            {isViLanguage ? " người dùng" : " user"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>
+                {isViLanguage ? "Địa chỉ email" : "Email"}
+              </Form.Label>
               <Form.Control
                 type="email"
                 placeholder="name@email.com"
@@ -187,12 +172,14 @@ const Modal_AddEditUser = (props) => {
                     color: "#d98a8a",
                   }}
                 >
-                  Email invalid
+                  {isViLanguage
+                    ? "Địa chỉ email không hợp lệ"
+                    : "Email invalid"}
                 </div>
               )}
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Fist Name</Form.Label>
+              <Form.Label>{isViLanguage ? "Tên" : "Fist Name"}</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Your First name"
@@ -211,12 +198,14 @@ const Modal_AddEditUser = (props) => {
                     color: "#d98a8a",
                   }}
                 >
-                  First name is empty
+                  {isViLanguage
+                    ? "Tên người dùng không được để trống"
+                    : "First name is empty"}
                 </div>
               )}
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Last Name</Form.Label>
+              <Form.Label>{isViLanguage ? "Họ" : "Last name"}</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Your Last name"
@@ -235,7 +224,9 @@ const Modal_AddEditUser = (props) => {
                     color: "#d98a8a",
                   }}
                 >
-                  Last name is empty
+                  {isViLanguage
+                    ? "Họ người dùng không được để trống"
+                    : "Last name is empty"}
                 </div>
               )}
             </Form.Group>
@@ -247,7 +238,7 @@ const Modal_AddEditUser = (props) => {
             onClick={handleClose}
             aria-label="Close modal"
           >
-            Close
+            {isViLanguage ? "Đóng" : "Close"}
           </Button>
           <Button
             variant="primary"
@@ -256,15 +247,20 @@ const Modal_AddEditUser = (props) => {
           >
             {isWaiting ? (
               <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+            ) : isViLanguage ? (
+              isAdd ? (
+                "Tạo người dùng"
+              ) : (
+                "Xác nhận"
+              )
             ) : isAdd ? (
-              <>Creat User</>
+              "Creat User"
             ) : (
-              <>Confirm</>
+              "Confirm"
             )}
           </Button>
         </Modal.Footer>
       </Modal>
-      {/* <ToastContainer /> */}
     </>
   );
 };

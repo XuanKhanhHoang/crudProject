@@ -8,6 +8,9 @@ import ModalAddEditUser from "./ModalAddEditUser";
 import ModalConfirm from "./ModalConfirm";
 import { useNavigate, useParams } from "react-router-dom";
 import { CSVLink } from "react-csv";
+import { vietnamese } from "../language/vietnamese";
+import { english } from "../language/english";
+import { useSelector } from "react-redux";
 function Manage() {
   const [userList, setUserList] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
@@ -87,6 +90,13 @@ function Manage() {
       setUserList([...list]);
     }
   };
+  const setStyleEvenRow = (index) => {
+    if (index % 2 === 0) return { backgroundColor: "#ededed" };
+    return {};
+  };
+  const isViLanguage = useSelector((state) => state.language.isViLanguage);
+  const viLanguage = vietnamese.manage;
+  const enLanguage = english.manage;
   return (
     <Container className="mt-2">
       <ModalAddEditUser
@@ -99,7 +109,11 @@ function Manage() {
         setEditingUserData={setEditingUserData}
       />
       <ModalConfirm
-        title={"Delete user "}
+        title={
+          isViLanguage
+            ? viLanguage.titleModalDelete
+            : enLanguage.titleModalDelete
+        }
         content={`Delete user have id is ${editingUserData.id}`}
         modalHandleShow={{
           show: deleteModalIsShow,
@@ -113,13 +127,22 @@ function Manage() {
         <input
           className="form-control "
           type="text"
-          placeholder="Seaching by email here ..."
+          placeholder={
+            isViLanguage
+              ? viLanguage.searchPlaceholder
+              : enLanguage.searchPlaceholder
+          }
           id="seachingManage"
           onChange={handleSearchUser}
         ></input>
       </div>
       <div className="d-flex justify-content-between my-2">
-        <span className="my-auto">List Users: </span>
+        <span className="my-auto">
+          {" "}
+          {isViLanguage
+            ? viLanguage.listUserTitle
+            : enLanguage.listUserTitle} :{" "}
+        </span>
         <div className="btnTopMangaUser">
           <CSVLink
             data={userList}
@@ -134,14 +157,15 @@ function Manage() {
             target="_blank"
           >
             <i className="fa-solid fa-file-export me-1"></i>
-            Export CSV
+            {isViLanguage ? viLanguage.exportCsvBtn : enLanguage.exportCsvBtn}
           </CSVLink>
           <Button
             variant="success"
-            className=""
+            className="mt-1 mt-sm-auto"
             onClick={() => handleUserModalShow({ isAdd: true, isShow: true })}
           >
-            <i className="fa-solid fa-circle-plus me-1"></i> Add new User
+            <i className="fa-solid fa-circle-plus me-1"></i>{" "}
+            {isViLanguage ? viLanguage.addNewUserBtn : enLanguage.addNewUserBtn}
           </Button>
         </div>
       </div>
@@ -150,7 +174,7 @@ function Manage() {
           <tr>
             <th>ID</th>
             <th>
-              <div className="">
+              <div>
                 <span>Email</span>{" "}
                 <i
                   className="fa-solid fa-arrow-down-a-z p-2 pb-1"
@@ -166,7 +190,9 @@ function Manage() {
             </th>
             <th className="d-none d-md-table-cell">
               <div style={{ minWidth: "155px" }}>
-                <span>First Name</span>{" "}
+                <span>
+                  {isViLanguage ? viLanguage.firstName : enLanguage.firstName}
+                </span>{" "}
                 <i
                   className="fa-solid fa-arrow-down-a-z p-2 pb-1"
                   style={{ cursor: "pointer" }}
@@ -179,89 +205,70 @@ function Manage() {
                 ></i>
               </div>
             </th>
-            <th className="d-none d-md-table-cell">Last Name</th>
-            <th>Action</th>
+            <th className="d-none d-md-table-cell">
+              {isViLanguage ? viLanguage.lastName : enLanguage.lastName}
+            </th>
+            <th>{isViLanguage ? viLanguage.action : enLanguage.action}</th>
           </tr>
         </thead>
         <tbody>
           {userList &&
             userList.length > 0 &&
             userList.map((user, index) => {
+              let styleEvenRow = setStyleEvenRow(index);
               return (
                 <React.Fragment key={`user-${user.id}`}>
                   <tr>
-                    <td
-                      style={
-                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
-                      }
-                    >
-                      {user.id}
-                    </td>
-                    <td
-                      style={
-                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
-                      }
-                    >
-                      {user.email}
-                    </td>
-                    <td
-                      className="d-none d-md-table-cell"
-                      style={
-                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
-                      }
-                    >
+                    <td style={styleEvenRow}>{user.id}</td>
+                    <td style={styleEvenRow}>{user.email}</td>
+                    <td className="d-none d-md-table-cell" style={styleEvenRow}>
                       {user.first_name}
                     </td>
-                    <td
-                      className="d-none d-md-table-cell"
-                      style={
-                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
-                      }
-                    >
+                    <td className="d-none d-md-table-cell" style={styleEvenRow}>
                       {user.last_name}
                     </td>
-                    <td
-                      style={
-                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
-                      }
-                    >
+                    <td style={styleEvenRow}>
                       <div className="btnGroup-action">
                         <Button
                           variant="warning"
                           className="me-1 mb-1"
                           onClick={() => handleEditUser(user)}
                         >
-                          Edit
+                          {isViLanguage
+                            ? viLanguage.editBtn
+                            : enLanguage.editBtn}
                         </Button>
                         <Button
                           variant="danger"
                           className="mb-1"
                           onClick={() => handleDeleteUser(user)}
                         >
-                          Delete
+                          {isViLanguage
+                            ? viLanguage.deleteBtn
+                            : enLanguage.deleteBtn}
                         </Button>
                       </div>
                     </td>
                   </tr>
                   <tr className="d-md-none">
-                    <td
-                      colSpan="3"
-                      style={
-                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
-                      }
-                    >
-                      <span style={{ fontWeight: "700" }}>First name:</span>{" "}
+                    <td colSpan="3" style={styleEvenRow}>
+                      <span style={{ fontWeight: "700" }}>
+                        {isViLanguage
+                          ? viLanguage.firstName
+                          : enLanguage.firstName}
+                        :
+                      </span>{" "}
                       {user.first_name}
                     </td>
                   </tr>
                   <tr className="d-md-none">
-                    <td
-                      colSpan="3"
-                      style={
-                        index % 2 === 0 ? { backgroundColor: "#ededed" } : {}
-                      }
-                    >
-                      <span style={{ fontWeight: "700" }}>Last name: </span>
+                    <td colSpan="3" style={styleEvenRow}>
+                      <span style={{ fontWeight: "700" }}>
+                        {isViLanguage
+                          ? viLanguage.lastName
+                          : enLanguage.lastName}
+                        :
+                      </span>{" "}
                       {user.last_name}
                     </td>
                   </tr>
@@ -272,16 +279,19 @@ function Manage() {
       </Table>
       {isLoading && (
         <span className="d-block text-center">
-          {" "}
-          Loading <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+          {isViLanguage ? viLanguage.loading : enLanguage.loading}{" "}
+          <i className="fa-solid fa-spinner fa-spin-pulse"></i>
         </span>
       )}
       {isError && (
-        <span className="d-block text-center"> Something wrong ....</span>
+        <span className="d-block text-center">
+          {" "}
+          {isViLanguage ? viLanguage.error : enLanguage.error} ....
+        </span>
       )}
       <ReactPaginate
-        previousLabel="Previous"
-        nextLabel="Next"
+        previousLabel="<"
+        nextLabel=">"
         pageClassName="page-item"
         pageLinkClassName="page-link shadow-none"
         previousClassName="page-item "

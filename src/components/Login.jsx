@@ -8,9 +8,12 @@ import { checkValidEmail } from "../utils/checkFormValid";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { handleLoginRedux } from "../redux/actions/userAction";
+import { english } from "../language/english";
+import { vietnamese } from "../language/vietnamese";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isRememberMe, setIsRememberMe] = useState(true);
   const [validInfo, setValidInfo] = useState({
     email: undefined,
     password: undefined,
@@ -27,11 +30,19 @@ const Login = () => {
     } else if (event.target.name === "loginPasswordlInp") {
       setPassword(event.target.value);
     }
-    // setCheck(true);
+  };
+  const rememberMe = (email, password) => {
+    const cookieEmail = `email=${email}`;
+    const cookiePassword = `password=${password}`;
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 1);
+    document.cookie = `${cookieEmail}; expires=${expirationDate.toUTCString()}`;
+    document.cookie = `${cookiePassword}; expires=${expirationDate.toUTCString()}`;
   };
   const handleSubmitLogin = async () => {
     setCheck(true);
     if (checkValidEmail(email) && password !== "" && isLoading === false) {
+      if (isRememberMe) rememberMe(email, password);
       dispatch(handleLoginRedux(email, password));
     }
   };
@@ -47,13 +58,26 @@ const Login = () => {
       navigate("/manage");
     }
   }, [account]);
+  useEffect(() => {
+    const emailCookie = document.cookie.match(/email=([^;]+)/);
+    const passwordCookie = document.cookie.match(/password=([^;]+)/);
+    if (emailCookie) {
+      setEmail(emailCookie[1]);
+    }
+    if (passwordCookie) {
+      setPassword(passwordCookie[1]);
+    }
+  }, []);
+  const isViLanguage = useSelector((state) => state.language.isViLanguage);
+  const viLanguage = vietnamese.login;
+  const enLanguage = english.login;
   return (
     <>
       <Container className="mt-3 ">
         <Form style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <Form.Group as={Row} className="mb-3" controlId="formBasicEmail">
             <Form.Label column className="text-center text-md-start" sm={3}>
-              Email address
+              {isViLanguage ? viLanguage.email : enLanguage.email}
             </Form.Label>
             <Col sm={8}>
               <Form.Control
@@ -76,7 +100,9 @@ const Login = () => {
                   color: "#d98a8a",
                 }}
               >
-                Email invalid
+                {isViLanguage
+                  ? viLanguage.email_invalid
+                  : enLanguage.email_invalid}
               </div>
             )}
             <Form.Text className="text-muted">
@@ -86,7 +112,7 @@ const Login = () => {
 
           <Form.Group as={Row} className="mb-3" controlId="formBasicPassword">
             <Form.Label className=" text-center text-md-start" column sm={3}>
-              Password
+              {isViLanguage ? viLanguage.password : enLanguage.password}
             </Form.Label>
             <Col sm={8} style={{ position: "relative" }}>
               <input
@@ -127,7 +153,9 @@ const Login = () => {
                   color: "#d98a8a",
                 }}
               >
-                Password is blank
+                {isViLanguage
+                  ? viLanguage.password_Invalid
+                  : enLanguage.password_Invalid}
               </div>
             )}
           </Form.Group>
@@ -139,12 +167,14 @@ const Login = () => {
               className="form-check-label me-3 text-center"
               htmlFor="rememberMeLoginCkBox"
             >
-              Remember Me :
+              {isViLanguage ? viLanguage.remeberMe : enLanguage.remeberMe} :
             </label>
             <input
               className="form-check-input"
               id="rememberMeLoginCkBox"
               type="checkbox"
+              value={isRememberMe}
+              onChange={() => setIsRememberMe(!isRememberMe)}
             />
           </Form.Group>
           <Button
@@ -155,8 +185,10 @@ const Login = () => {
           >
             {isLoading ? (
               <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+            ) : isViLanguage ? (
+              viLanguage.login
             ) : (
-              <>Submit</>
+              enLanguage.login
             )}
           </Button>
         </Form>
