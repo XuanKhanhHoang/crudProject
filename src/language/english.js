@@ -36,8 +36,8 @@ export const english = {
     more: "More",
     more_about: "About",
     more_toGithub: "To my Github",
-    login: "Login",
-    logout: "Logout",
+    login: "Log in",
+    logout: "Log out",
   },
   about: {
     aboutTitle: "About Me",
