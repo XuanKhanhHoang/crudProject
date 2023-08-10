@@ -32,6 +32,7 @@ const Login = () => {
     }
   };
   const rememberMe = (email, password) => {
+    document.cookie = "";
     const cookieEmail = `email=${email}`;
     const cookiePassword = `password=${password}`;
     const expirationDate = new Date();
@@ -42,7 +43,10 @@ const Login = () => {
   const handleSubmitLogin = async () => {
     setCheck(true);
     if (checkValidEmail(email) && password !== "" && isLoading === false) {
-      if (isRememberMe) rememberMe(email, password);
+      console.log(isRememberMe);
+      if (isRememberMe) {
+        rememberMe(email, password);
+      }
       dispatch(handleLoginRedux(email, password));
     }
   };
@@ -173,8 +177,10 @@ const Login = () => {
               className="form-check-input"
               id="rememberMeLoginCkBox"
               type="checkbox"
-              value={isRememberMe}
-              onChange={() => setIsRememberMe(!isRememberMe)}
+              checked={isRememberMe}
+              onChange={() => {
+                setIsRememberMe(!isRememberMe);
+              }}
             />
           </Form.Group>
           <Button
