@@ -34,7 +34,7 @@ export const vietnamese = {
     viLangName: "Tiếng Việt",
     enLangName: "Tiếng Anh",
     more: "Thêm nữa",
-    more_about: "Về chúng tôi",
+    more_about: "Về tôi",
     more_toGithub: "Tới trang Github",
     login: "Đăng nhập",
     logout: "Đăng xuất",
