@@ -56,7 +56,7 @@ const ModalConfirm = (props) => {
             ) : isViLanguage ? (
               "Xác nhận"
             ) : (
-              "Cofirm"
+              "Confirm"
             )}
           </Button>
         </Modal.Footer>

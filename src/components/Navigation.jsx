@@ -18,6 +18,10 @@ function Navigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.account);
+
+  const isViLanguage = useSelector((state) => state.language.isViLanguage);
+  const viLanguage = vietnamese.navigation;
+  const enLanguage = english.navigation;
   const HandleLogInOut = () => {
     if (user.auth) {
       toast.success("Log out succesful", {
@@ -36,9 +40,6 @@ function Navigation() {
       navigate("/");
     } else navigate("/login");
   };
-  const isViLanguage = useSelector((state) => state.language.isViLanguage);
-  const viLanguage = vietnamese.navigation;
-  const enLanguage = english.navigation;
   const handleChangeLanguage = (language) => {
     if (!isViLanguage) {
       if (language === toEngLanguage) return;
@@ -94,7 +95,7 @@ function Navigation() {
               <Dropdown className="me-lg-3 ms-md-auto my-0 mx-auto">
                 <Dropdown.Toggle variant="dark flex-nowrap" id="dropdown-basic">
                   <img
-                    srcSet={vnLogo_Img}
+                    srcSet={isViLanguage ? vnLogo_Img : enLogo_Img}
                     alt=""
                     className="languageLogo vnLanguageLogo"
                   />
@@ -106,6 +107,7 @@ function Navigation() {
                 >
                   <Dropdown.Item
                     onClick={() => handleChangeLanguage(toViLanguage)}
+                    className={isViLanguage && " choosingLang"}
                   >
                     <img
                       srcSet={vnLogo_Img}
@@ -118,6 +120,7 @@ function Navigation() {
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => handleChangeLanguage(toEngLanguage)}
+                    className={!isViLanguage && " choosingLang"}
                   >
                     <img
                       srcSet={enLogo_Img}

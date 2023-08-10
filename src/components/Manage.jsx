@@ -114,7 +114,11 @@ function Manage() {
             ? viLanguage.titleModalDelete
             : enLanguage.titleModalDelete
         }
-        content={`Delete user have id is ${editingUserData.id}`}
+        content={
+          (isViLanguage
+            ? "Xóa người dung có id là "
+            : "Delete user have id is ") + ` ${editingUserData.id}`
+        }
         modalHandleShow={{
           show: deleteModalIsShow,
           handleModalShow: setDeleteModalIsShow,

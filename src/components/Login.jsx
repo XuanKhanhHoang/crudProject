@@ -130,7 +130,7 @@ const Login = () => {
                 }}
               ></input>
               <i
-                class={
+                className={
                   `fa-regular showHidePwdLogin  fa-eye` +
                   (showPwd ? "" : "-slash")
                 }
