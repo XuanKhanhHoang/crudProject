@@ -1,30 +1,68 @@
 import React from "react";
+import avatar from "../assets/about_avatar.jpg";
+import { english } from "../language/english";
+import { vietnamese } from "../language/vietnamese";
+import { useSelector } from "react-redux";
 
 const AboutMe = () => {
+  const engLanguage = english.about;
+  const viLanguage = vietnamese.about;
+  const isViLanguage = useSelector((state) => state.language.isViLanguage);
   return (
     <div className="about-me mt-3">
-      <h1>About Me</h1>
-      <p>
-        I am a third-year student majoring in Information Technology at
-        University of Communication and Transport . I am passionate about
-        learning and exploring new things, especially in the field of
-        technology. I enjoy solving problems and building new products that can
-        help people.
-      </p>
-      <p>
-        During my studies, I have had the opportunity to participate in many
-        projects in information technology, including developing web
-        applications, designing database systems,
-      </p>
-      <p>
-        After graduation, I hope to work in the field of technology, especially
-        in the field of Web Developing.
-      </p>
-      <p>
-        I am a sociable and approachable person. I am always willing to help
-        others and I am always eager to learn new things. I believe that I will
-        be a valuable member of any team.
-      </p>
+      <h1>{isViLanguage ? viLanguage.aboutTitle : engLanguage.aboutTitle}</h1>
+      <div className="headerInfo d-flex">
+        <img
+          srcSet={avatar}
+          alt="avatar"
+          style={{
+            height: "120px",
+            borderRadius: "10px",
+            marginBottom: "0.4rem",
+          }}
+        />
+        <div className="headerContactInfo ms-3 d-flex flex-column justify-content-center">
+          <div>
+            <i
+              className="fa-solid fa-user"
+              style={{ fontSize: "17px", width: "18px" }}
+            ></i>
+            {isViLanguage ? "Họ và tên " : "Full name "}:
+            <span style={{ fontWeight: "600" }}>
+              {" "}
+              {isViLanguage ? "Hoàng Xuân Khanh" : "Xuan Khanh Hoang"}
+            </span>
+          </div>
+          <div className="emailInfo">
+            <i className="fa-solid fa-envelope"></i> Email :{" "}
+            <span className="fw-semibold cursorPointer">
+              hoangxuankhanh.work@gmail.com
+            </span>
+          </div>
+          <div className="githubInfo">
+            <i
+              className="fa-brands fa-square-github"
+              style={{ fontSize: "18px" }}
+            ></i>{" "}
+            Github :{" "}
+            <span
+              className="fw-semibold cursorPointer"
+              onClick={() => {
+                window.open("https://github.com/XuanKhanhHoang", "_blank");
+              }}
+            >
+              https://github.com/XuanKhanhHoang
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
+        dangerouslySetInnerHTML={{
+          __html: isViLanguage
+            ? viLanguage.aboutContent
+            : engLanguage.aboutContent,
+        }}
+      ></div>
     </div>
   );
 };

@@ -39,4 +39,31 @@ export const english = {
     login: "Login",
     logout: "Logout",
   },
+  about: {
+    aboutTitle: "About Me",
+    aboutContent: `
+      <p>
+        My full name is Xuan Khanh Hoang .I was born in 2003 in Phu Tho ,Viet
+        Nam
+      </p>
+      <p>
+        I’m a third-year student majoring in Information Technology in the
+        University of Transport and Communication . I love learning and
+        exploring new things, especially in technology. I love solving problems
+        and creating new products that can help people.
+      </p>
+      <p>
+        During my studies, I had the opportunity to participate in many IT
+        projects, such as developing web applications, database systems.
+      </p>
+      <p>
+        After graduation, I hope to pursue a career in technology, specifically
+        Web Developing.
+      </p>
+      <p>
+        I am sociable and approachable. I am always willing to help others and
+        always eager to learn new things. I think I would be a valuable team
+        member
+      </p>`,
+  },
 };
